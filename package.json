@@ -1,0 +1,23 @@
+{
+  "name": "nft-similarity-service",
+  "version": "1.0.0",
+  "description": "ARC69-NFT-recommendation-system leveraging elasticsearch ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon --max-old-space-size=4192 server",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "harsha bakku",
+  "license": "ISC",
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.4.0",
+    "agentkeepalive": "^4.0.2",
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "express-form-data": "^2.0.10",
+    "get-json": "^1.0.1",
+    "log-timestamp": "^0.3.0",
+    "nodemon": "^1.19.2"
+  }
+}
