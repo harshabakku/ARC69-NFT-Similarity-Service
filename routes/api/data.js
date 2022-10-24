@@ -4,6 +4,9 @@ const router = express.Router();
 const axios = require('axios')
 const client = require('../../elasticsearch/connection');
 
+const AlgoSeasListingsURL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=listing&sortBy=price&sortAscending=true&limit=500`;
+
+
 router.get('/indexAllDocs', async function (req, res) {
     console.log('Loading Application...')
     // res.json('Application Running...')
@@ -25,6 +28,18 @@ router.get('/indexAllDocs', async function (req, res) {
     indexAllDocs = async () => {
         try {
              
+            console.log('Getting Data From AlgoSeas Listings API')
+
+            const algoSeaslistings = await axios.post(`${AlgoSeasListingsURL}`,{},{
+                headers: {
+                    "Content-Type": "application/json"
+                }                                
+            });
+
+            console.log('Data Received!')
+
+            results = algoSeaslistings.data
+
             // test indexing
             await client.index({
                 index: 'game-of-thrones',
@@ -37,7 +52,9 @@ router.get('/indexAllDocs', async function (req, res) {
 
             console.log('All Data Has Been Indexed!');
             
-            res.json('All Data Has Been Indexed!')
+            res.json(results)
+
+            // res.json('All Data Has Been Indexed!')
 
 
             
