@@ -3,9 +3,18 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios')
 const client = require('../../elasticsearch/connection');
+require('events').EventEmitter.defaultMaxListeners = 0; //several async functions running in parallel while indexing assets to elasticsearch. //bulkIndex, batchProcessIndexing to elasticsearch is another solution. 
 
-const AlgoSeasListingsURL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=listing&sortBy=price&sortAscending=true&limit=500`;
+const algoSeasListingsURL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=listing&sortBy=price&sortAscending=true&limit=500`;
 
+
+//convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
+ function replacer(key, value) {
+    if (typeof value === "boolean") {
+      return String(value);
+    }
+    return value;
+  }
 
 router.get('/indexAllDocs', async function (req, res) {
     console.log('Loading Application...')
@@ -30,7 +39,7 @@ router.get('/indexAllDocs', async function (req, res) {
              
             console.log('Getting Data From AlgoSeas Listings API')
 
-            const algoSeaslistings = await axios.post(`${AlgoSeasListingsURL}`,{},{
+            const result = await axios.post(`${algoSeasListingsURL}`,{},{
                 headers: {
                     "Content-Type": "application/json"
                 }                                
@@ -38,25 +47,44 @@ router.get('/indexAllDocs', async function (req, res) {
 
             console.log('Data Received!')
 
-            results = algoSeaslistings.data
+            const algoSeasListings = result.data.assets
 
-            // test indexing
-            await client.index({
-                index: 'game-of-thrones',
-                document: {
-                  character: 'Ned Stark',
-                  quote: 'Winter is coming.'
-                }
-              })
             console.log('Indexing Data...')
 
-            console.log('All Data Has Been Indexed!');
+            console.log("no. of listings assets fetched " + algoSeasListings.length)
+
             
-            res.json(results)
+            algoSeasListings.map(async algoSeasListing => (
+            
+                assetProps = algoSeasListing.assetInformation.nProps.properties,
 
-            // res.json('All Data Has Been Indexed!')
+                //add additional key fields to be indexed to es.
+                
+                assetProps.price = algoSeasListing.assetInformation.listing.price,
+                assetProps.listedAlgoAmount = algoSeasListing.marketActivity.listedAlgoAmount, //price and listedAlgoAmount are same...
+                assetProps.nName =  algoSeasListing.assetInformation.nName,
+                assetProps.id   = assetProps.nName.split("#")[1],  
+                
+                console.log(assetProps),
+                //convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
+                assetProps = JSON.parse(JSON.stringify(assetProps, replacer)),
 
+                console.log(assetProps),
 
+                await client.index({ 
+                    index: 'algoseaspirates', //need to be generic for any collection...
+                    id:  assetProps.id,
+                    body: assetProps
+                }), (err, resp, status) => {
+                    console.log(resp);
+                }
+                                
+                ));
+
+            console.log('All Listings Assets Have Been Indexed!');
+            
+            res.json(algoSeasListings)
+            
             
         } catch (err) {
             console.log(err)
