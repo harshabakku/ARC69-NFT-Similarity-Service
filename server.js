@@ -2,7 +2,8 @@ const express = require('express');
 const formData = require('express-form-data');
 const path = require('path');
 const client = require('./elasticsearch/connection');
-const data = require('./routes/api/data')
+const data = require('./routes/api/data');
+const similarityService =  require('./routes/api/similarityService');
   
 //Initialize Express
 const app = express(); 
@@ -26,6 +27,7 @@ app.use(formData.parse())
 
 //Define Routes
 app.use('/api/data', data);
+app.use('/api/similarityService', similarityService);
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));

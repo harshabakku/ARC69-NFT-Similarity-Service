@@ -6,7 +6,7 @@ const client = require('../../elasticsearch/connection');
 require('events').EventEmitter.defaultMaxListeners = 0; //several async functions running in parallel while indexing assets to elasticsearch. //bulkIndex, batchProcessIndexing to elasticsearch is another solution. 
 
 const algoSeasListingsURL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=listing&sortBy=price&sortAscending=true&limit=500`;
-const intervalDuration =  3600000  //dataFetchandIndexInterval duration in milli secs
+const intervalDuration =  3600000  //dataFetchandIndexInterval duration in milli secs, change it to 60 secs before go live.
 
 //convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
 function replacer(key, value) {
@@ -55,22 +55,25 @@ router.get('/indexAllDocs', async function (req, res) {
             
             algoSeasListings.map(async algoSeasListing => (
             
-                assetProps = algoSeasListing.assetInformation.nProps.properties,
-
-                //add additional key fields to be indexed to es.
-                assetProps.price = algoSeasListing.assetInformation.listing.price,
-                assetProps.listedAlgoAmount = algoSeasListing.marketActivity.listedAlgoAmount, //price and listedAlgoAmount are same...
+                assetProps = {},
+                assetProps.id   =  algoSeasListing.assetInformation.nName.split("#")[1],  
                 assetProps.nName =  algoSeasListing.assetInformation.nName,
+                
+                
+                assetProps ={ ...assetProps, ...algoSeasListing.assetInformation.nProps.properties},
+                
+                //add additional key fields to be indexed to es.
+                assetProps.listedAlgoAmount = algoSeasListing.marketActivity.listedAlgoAmount, //price and listedAlgoAmount are same...
+                assetProps.price = algoSeasListing.assetInformation.listing.price,
                 
                 //http://localhost:9200/index/id  returns the asset properties/data where index is the collectionName and id is asset/pirate Id
                 esIndex =  algoSeasListing.assetInformation.nName.split("#")[0].replace(/ /g,'').toLowerCase(), //es allows index names without spaces and lowercase only 
-                assetProps.id   =  algoSeasListing.assetInformation.nName.split("#")[1],  
                 
                 
                 //convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
                 assetProps = JSON.parse(JSON.stringify(assetProps, replacer)),
 
-                console.log(assetProps),
+                // console.log(assetProps),
 
                 await client.index({ 
                     index: esIndex, //generic for any collection...
@@ -105,7 +108,7 @@ router.get('/indexAllDocs', async function (req, res) {
     //setInterval used to ingest data automatically in near real-time! //interval can be set to as low as 1min
     // this ensures that gaming NFTs properties to be in sync with elasticsearch NFTs.
             
-    // in the future future this fetchData and Index action should be incrementallly updating only the assets whose props have changed/updated since the last run 
+    // in the future future this fetchData and Index action should be incrementally updating only the assets whose metadata have changed/updated since the last run 
     setInterval(() => {
         pingElasticsearch()
         indexAllDocs()
