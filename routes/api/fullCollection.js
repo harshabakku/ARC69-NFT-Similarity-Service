@@ -1,17 +1,21 @@
+/**
+ * @author harsha bakku
+ * @since 0.1
+ * @version 0.1
+ */
 require('log-timestamp');
 const express = require('express');
 const router = express.Router();
-const axios = require('axios')
+ const axios = require('axios')
+const config = require("../../config.js");
 const client = require('../../elasticsearch/connection');
+
 require('events').EventEmitter.defaultMaxListeners = 0; //several async functions running in parallel while indexing assets to elasticsearch. //bulkIndex, batchProcessIndexing to elasticsearch is another solution. 
 
-const fullCollectionURL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000`;
 // let nextToken = 'eyJQSyI6Ik5GVCIsIlNLIjoiODc0NjAyNTE3IiwiY29sTmFtZSI6IkFsZ29TZWFzIFBpcmF0ZXMiLCJuUmFuayI6MjAwMDB9';
 let nextToken = null
 
-const collectionSalesURL = 'https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/sales?collectionName=AlgoSeas%20Pirates&sortBy=time&sortAscending=false&limit=5000' 
-
-const intervalDuration =  3600000  //dataFetchandIndexInterval duration in milli secs, change it to 60 secs before go live.
+const intervalDuration =  config.dataFetchInterval;  
 
 //convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
 function replacer(key, value) {
@@ -24,12 +28,12 @@ function replacer(key, value) {
 
 // ====== Get Data From AlgoSeas Full Collection API (or Web3 in the future) and then index onto Elasticsearch
 // indexes listing data as well
-async function indexFullCollection () { 
+async function indexFullCollection (collectionName) { 
     try {
 
-        let dataURL = fullCollectionURL;            
+        let dataURL = config.fullCollectionURLPrefix + encodeURI(collectionName) + `?type=collection&sortAscending=true&limit=5000`;            
         if(nextToken!=null){
-            dataURL = fullCollectionURL+ "&nextToken=" + nextToken
+            dataURL = dataURL+ "&nextToken=" + nextToken
         }
 
         console.log(dataURL);
@@ -42,7 +46,7 @@ async function indexFullCollection () {
         const algoSeasAssets = result.data.assets;
         nextToken = result.data.nextToken;
 
-        console.log("Indexing fetched assets/NFTs to elasticsearch" + algoSeasAssets.length )
+        console.log("Indexing fetched assets/NFTs to elasticsearch: "  + algoSeasAssets.length )
         
         // console.log(algoSeasAssets);
 
@@ -62,7 +66,7 @@ async function indexFullCollection () {
 
             
             //http://localhost:9200/index/_doc/id  returns the asset properties/data where index is the collectionName and id is asset/pirate Id
-            esIndex =  asset.assetInformation.nName.split("#")[0].replace(/ /g,'').toLowerCase(), //es allows index names without spaces and lowercase only 
+            esIndex =  collectionName.replace(/ /g,'').toLowerCase(), //es allows index names without spaces and lowercase only 
             
             //convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
             assetProps = JSON.parse(JSON.stringify(assetProps, replacer)),
@@ -84,13 +88,16 @@ async function indexFullCollection () {
 
         if (nextToken) {
             console.log("fetching data again using nextToken ")
-            indexFullCollection();
+            indexFullCollection(collectionName);
 
         } else {                    
             nextToken = null;
 
             console.log('All Assets (Full Collection) Have Been Indexed!\n\n\n');     
+            
+            const collectionSalesURL = config.collectionSalesURLPrefix + '?collectionName=' + encodeURI(collectionName) +  '&sortBy=time&sortAscending=false&limit=5000'
             console.log('Fetching Sales Data now....'+ collectionSalesURL)
+            
             
 
             const result = await axios.get(`${collectionSalesURL}`,{
@@ -108,7 +115,7 @@ async function indexFullCollection () {
                 let asset = algoSeasAssetSales[i];
                 
                 assetId   =  asset.assetInformation.nName.split("#")[1],  
-                esIndex =  asset.assetInformation.nName.split("#")[0].replace(/ /g,'').toLowerCase(),  
+                esIndex =   collectionName.replace(/ /g,'').toLowerCase(),  
                                         
                 await client.update({ 
                     index: esIndex, 
@@ -137,18 +144,19 @@ async function indexFullCollection () {
 
 router.get('/indexFullCollection', async function (req, res) {
     
-    //fetch and index data for the first time. 
+    //fetch and index data for the first time. //takes less than 2 min 
     console.log('Getting Data From AlgoSeas Full Collection API');
     
-    await indexFullCollection();
+    const collectionName = config.collectionName;
+    await indexFullCollection(collectionName);
         
 
     // setInterval used to ingest data automatically in near real-time! //interval can be set to as low as 1min
     // this ensures that gaming NFTs properties to be in sync with elasticsearch NFTs.
             
-    // in the future future this fetchData and Index action should be incrementally updating only the assets whose metadata have changed/updated since the last run 
+    // in the future(if indexing takes longer than 15 min) fetchData and Index action should be incrementally updating only the assets whose metadata have changed/updated since the last run 
     setInterval(async () => {
-        await indexFullCollection();
+        await indexFullCollection(collectionName);
     }, intervalDuration); 
 
 });
