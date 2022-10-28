@@ -21,11 +21,51 @@ router.get('/similarNFTs', async function (req, res) {
         );
     }
 
+    buildExecuteQuery = async (esIndex, propertyQueries, functionScoreQueries, existsField, limit) => {
+
+        const query = {                
+            "size" : limit, //we can control the no. of results from es with size here... 
+            "query": {
+                "function_score": {
+                    "query": {
+                        "bool": { 
+                            "should": propertyQueries,
+                            "filter": [
+                                {    
+                                    "exists": {
+                                    "field": existsField  //returns only listing or soldNFT
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "functions" : [
+                        {  //can be 'exp' for exponential or 'linear' 
+                        "linear": functionScoreQueries
+                        }
+                    ]
+                        
+                }
+            }
+        }
+
+        console.log(JSON.stringify(query));
+
+        const result = await client.search({
+                index: esIndex,     
+                body: query
+            })
+
+        
+        return result
+    
+    }
+
     similarNFTs = async () => {
 
         try {
                         
-            const originalNFTData = await client.get({
+            const givenNFTData = await client.get({
                 index: 'algoseaspirate', //replace with indexName/CollectionName 
                 id: '20393'
               })
@@ -39,14 +79,14 @@ router.get('/similarNFTs', async function (req, res) {
             const metadataFields = //[ "Back Hand",  "Back Item",  "Background",  "Background Accent",  "Body",  "Face",  "Facial Hair",  "Footwear",  "Front Hand",  "Hat",  "Head",  "Hip Item",  "Left Arm",  "Necklace",  "Overcoat",  "Pants",  "Pet",  "Right Arm",  "Scenery",  "Shirt",  "Shirts",  "Tattoo",  
                               ["combat", "constitution", "luck", "plunder"];
 
-            const integerFields = ["combat", "constitution", "luck", "plunder"];                   
+            const metadataLongFields = ["combat", "constitution", "luck", "plunder"];                   
 
 
             //build should query (OR query) to match various asset props here.
             //elasticsearch computes the similarity score accordingly depending on the no. of matches . https://www.elastic.co/guide/en/elasticsearch/reference/current/similarity.html
             const propertyQueries = [];
             metadataFields.forEach(function(property) {
-                    propertyQueries.push({ "match": { [property] :  originalNFTData._source[property] }});                
+                    propertyQueries.push({ "match": { [property] :  givenNFTData._source[property] }});                
                 });
 
 
@@ -54,9 +94,9 @@ router.get('/similarNFTs', async function (req, res) {
             //https://stackoverflow.com/questions/37005785/how-to-find-the-nearest-closest-number-using-query-dsl-in-elasticsearch    
             //https://stackoverflow.com/questions/58046769/elasticsearch-find-closest-number-when-scoring-results?rq=1
             const functionScoreQueries = {}
-            integerFields.forEach(function(property) {
+            metadataLongFields.forEach(function(property) {
                     functionScoreQueries[property] =  {
-                                                                origin: originalNFTData._source[property],
+                                                                origin: givenNFTData._source[property],
                                                                 scale: 1,
                                                                 decay: 0.999
                                                              }; 
@@ -64,41 +104,26 @@ router.get('/similarNFTs', async function (req, res) {
 
             console.log(functionScoreQueries);
 
-            const query = {                
-                    "size" : 100, //we can control the no. of results from es with size here... 
-                    "query": {
-                        "function_score": {
-                            "query": {
-                                "bool": { 
-                                    "should": propertyQueries
-                                }
-                            },
-                            "functions" : [
-                                {  //can be 'exp' for exponential or 'linear' 
-                                "linear": functionScoreQueries
-                                }
-                            ]
-                                
-                        }
-                    }
-                }    
             
-            console.log(JSON.stringify(query));   
+            console.log(' Getting Similar listings NFTs from es query results \n')
+            const listingsResult = await buildExecuteQuery(givenNFTData._index, propertyQueries, functionScoreQueries, "listingDate", 50)
+            console.log(listingsResult);
+            
+            console.log(' Getting Similar Sales NFTs from es query results \n')
+            const salesResult = await buildExecuteQuery(givenNFTData._index, propertyQueries, functionScoreQueries, "saleDate", 50)
+            console.log(salesResult);
             
             
-            console.log(' Getting Similar NFTs from es query results \n')
-            const result = await client.search({
-                                index: originalNFTData._index,     
-                                body: query
-                            })
-              
+                                    
+            //remove the givenNFT from the elasticsearch result hits 
+            let similarListingNFTs = listingsResult.hits.hits;
+            similarListingNFTs.shift();
+
             
-            //remove the top most result(originalNFT) from the elasticsearch result hits 
-            let similarNFTs = result.hits.hits;
-            similarNFTs.shift();
-          
-            res.json({  originalNFT : originalNFTData._source,
-                        similarNFTs : similarNFTs  //descending with similarity score 
+            
+            res.json({  givenNFT : givenNFTData._source,
+                        similarListingNFTs : similarListingNFTs,  //descending with similarity score 
+                        similarSaleNFTs : salesResult.hits.hits
                     });            
             
         } catch (err) {

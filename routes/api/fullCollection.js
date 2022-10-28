@@ -42,7 +42,7 @@ async function indexFullCollection () {
         const algoSeasAssets = result.data.assets;
         nextToken = result.data.nextToken;
 
-        console.log("Indexing fetched assets/NFTs to elasticsearch" + algoSeasAssets.length + )
+        console.log("Indexing fetched assets/NFTs to elasticsearch" + algoSeasAssets.length )
         
         // console.log(algoSeasAssets);
 
@@ -120,7 +120,7 @@ async function indexFullCollection () {
                 
             }
             
-            console.log('Sales data Indexing Complete:  ' +  algoSeasAssetSales.length + ' assets \n\n\n\n\n');      
+            console.log('Full Sales Data Indexing/Updating Complete:  ' +  algoSeasAssetSales.length + ' assets \n\n\n\n\n');      
             console.log('...........Preparing For The Next Data Check In ' + intervalDuration/1000 + ' secs........... ');
            
         };
