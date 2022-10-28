@@ -147,7 +147,7 @@ router.get('/indexFullCollection', async function (req, res) {
     //fetch and index data for the first time. //takes less than 2 min 
     console.log('Getting Data From AlgoSeas Full Collection API');
     
-    const collectionName = config.collectionName;
+    const collectionName = req.query.collectionName;    
     await indexFullCollection(collectionName);
         
 
