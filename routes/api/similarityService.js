@@ -45,11 +45,7 @@ router.get('/similarNFTs', async function (req, res) {
                             ]
                         }
                     },
-                    "functions" : [
-                        {  //can be 'exp' for exponential or 'linear' 
-                        "linear": functionScoreQueries
-                        }
-                    ]
+                    "functions" : functionScoreQueries
                         
                 }
             }
@@ -73,7 +69,7 @@ router.get('/similarNFTs', async function (req, res) {
     
     }
 
-    similarNFTs = async () => {
+    similarNFTs = async (explainScoring) => {
 
         try {
                         
@@ -101,23 +97,24 @@ router.get('/similarNFTs', async function (req, res) {
             //https://stackoverflow.com/questions/58046769/elasticsearch-find-closest-number-when-scoring-results?rq=1
             
             //The scale field tells elastic how to decay the score with matching number's distance from origin(property value)
-            const functionScoreQueries = {}
+            const functionScoreQueries = []
             metadataLongFields.forEach(function(property) {
-                    functionScoreQueries[property] =  {
+                    functionScoreQueries.push({ "linear" :{
+                                                            [property] :  {
                                                                 origin: givenNFTData._source[property],
                                                                 scale: 1,
                                                                 decay: 0.99
-                                                             }; 
+                                                             }
+                                                          } 
+                                              }); 
                 });
-
-            console.log(functionScoreQueries);
 
             
             console.log(' Getting Similar listings NFTs from es query results \n')
-            const listingsResult = await buildExecuteQuery(givenNFTData, propertyQueries, functionScoreQueries, "listingDate", 50, false)
+            const listingsResult = await buildExecuteQuery(givenNFTData, propertyQueries, functionScoreQueries, "listingDate", 50, explainScoring)
             
             console.log(' Getting Similar Sales NFTs from es query results \n')
-            const salesResult = await buildExecuteQuery(givenNFTData, propertyQueries, functionScoreQueries, "saleDate", 50, false)
+            const salesResult = await buildExecuteQuery(givenNFTData, propertyQueries, functionScoreQueries, "saleDate", 50, explainScoring)
             
           
                         
@@ -134,7 +131,7 @@ router.get('/similarNFTs', async function (req, res) {
     }
     
     pingElasticsearch()
-    similarNFTs()     
+    similarNFTs(true)     
 
 });
  

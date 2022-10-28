@@ -21,8 +21,7 @@ dotenv.config();
  
         collectionName : 'AlgoSeas Pirates',
 
-        metadataFields : //[ "Back Hand",  "Back Item",  "Background",  "Background Accent",  "Body",  "Face",  "Facial Hair",  "Footwear",  "Front Hand",  "Hat",  "Head",  "Hip Item",  "Left Arm",  "Necklace",  "Overcoat",  "Pants",  "Pet",  "Right Arm",  "Scenery",  "Shirt",  "Shirts",  "Tattoo",  
-        ["combat", "constitution", "luck", "plunder"],
+        metadataFields : [ "Back Hand",  "Back Item",  "Background",  "Background Accent",  "Body",  "Face",  "Facial Hair",  "Footwear",  "Front Hand",  "Hat",  "Head",  "Hip Item",  "Left Arm",  "Necklace",  "Overcoat",  "Pants",  "Pet",  "Right Arm",  "Scenery",  "Shirt",  "Shirts",  "Tattoo"],  
 
         metadataLongFields : ["combat", "constitution", "luck", "plunder"]                   
 
