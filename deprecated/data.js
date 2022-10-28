@@ -2,7 +2,7 @@ require('log-timestamp');
 const express = require('express');
 const router = express.Router();
 const axios = require('axios')
-const client = require('../../elasticsearch/connection');
+const client = require('../elasticsearch/connection');
 require('events').EventEmitter.defaultMaxListeners = 0; //several async functions running in parallel while indexing assets to elasticsearch. //bulkIndex, batchProcessIndexing to elasticsearch is another solution. 
 
 const algoSeasListingsURL = `https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=listing&sortBy=price&sortAscending=true&limit=500`;

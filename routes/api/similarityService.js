@@ -21,9 +21,10 @@ router.get('/similarNFTs', async function (req, res) {
         );
     }
 
-    buildExecuteQuery = async (esIndex, propertyQueries, functionScoreQueries, existsField, limit) => {
+    buildExecuteQuery = async (givenNFT, propertyQueries, functionScoreQueries, existsField, limit, explain) => {
 
-        const query = {                
+        const query = {     
+            "explain": explain,           
             "size" : limit, //we can control the no. of results from es with size here... 
             "query": {
                 "function_score": {
@@ -52,12 +53,18 @@ router.get('/similarNFTs', async function (req, res) {
         console.log(JSON.stringify(query));
 
         const result = await client.search({
-                index: esIndex,     
+                index: givenNFT._index,     
                 body: query
             })
 
+        console.log(result);
+
+        //remove the givenNFT from the elasticsearch result hits             
+        const similarNFTs = result.hits.hits.filter(function (similarNFT) {     
+            return similarNFT._id != givenNFT._id
+        });    
         
-        return result
+        return similarNFTs
     
     }
 
@@ -91,14 +98,15 @@ router.get('/similarNFTs', async function (req, res) {
 
 
             //https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-function-score-query.html#function-decay   
-            //https://stackoverflow.com/questions/37005785/how-to-find-the-nearest-closest-number-using-query-dsl-in-elasticsearch    
             //https://stackoverflow.com/questions/58046769/elasticsearch-find-closest-number-when-scoring-results?rq=1
+            
+            //The scale field tells elastic how to decay the score with matching number's distance from origin(property value)
             const functionScoreQueries = {}
             metadataLongFields.forEach(function(property) {
                     functionScoreQueries[property] =  {
                                                                 origin: givenNFTData._source[property],
                                                                 scale: 1,
-                                                                decay: 0.999
+                                                                decay: 0.99
                                                              }; 
                 });
 
@@ -106,24 +114,16 @@ router.get('/similarNFTs', async function (req, res) {
 
             
             console.log(' Getting Similar listings NFTs from es query results \n')
-            const listingsResult = await buildExecuteQuery(givenNFTData._index, propertyQueries, functionScoreQueries, "listingDate", 50)
-            console.log(listingsResult);
+            const listingsResult = await buildExecuteQuery(givenNFTData, propertyQueries, functionScoreQueries, "listingDate", 50, false)
             
             console.log(' Getting Similar Sales NFTs from es query results \n')
-            const salesResult = await buildExecuteQuery(givenNFTData._index, propertyQueries, functionScoreQueries, "saleDate", 50)
-            console.log(salesResult);
+            const salesResult = await buildExecuteQuery(givenNFTData, propertyQueries, functionScoreQueries, "saleDate", 50, false)
             
-            
-                                    
-            //remove the givenNFT from the elasticsearch result hits 
-            let similarListingNFTs = listingsResult.hits.hits;
-            similarListingNFTs.shift();
-
-            
-            
+          
+                        
             res.json({  givenNFT : givenNFTData._source,
-                        similarListingNFTs : similarListingNFTs,  //descending with similarity score 
-                        similarSaleNFTs : salesResult.hits.hits
+                        similarListingNFTs : listingsResult,  //descending with similarity score 
+                        similarSaleNFTs : salesResult
                     });            
             
         } catch (err) {

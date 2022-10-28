@@ -2,7 +2,7 @@ const express = require('express');
 const formData = require('express-form-data');
 const path = require('path');
 const client = require('./elasticsearch/connection');
-const data = require('./routes/api/data');
+const data = require('./deprecated/data');
 const fullCollection = require('./routes/api/fullCollection');
 const similarityService =  require('./routes/api/similarityService');
   
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(formData.parse())
 
 //Define Routes
-app.use('/api/data', data);
+app.use('/api/data', data); //deprecated as listing data is also available in fullCollection.
 app.use('/api/fullCollection', fullCollection);
 app.use('/api/similarityService', similarityService);
 
