@@ -1,12 +1,21 @@
+require('log-timestamp');
 const { Client } = require('@elastic/elasticsearch');
+const config = require("../../config.js");
 
-var client = new Client({  
 
-    node : "http://172.18.0.2:9200/", 
+const nodeURL = config.elasticSearchServerURL;
+
+console.log( "connecting to Elasticsearch node: "+ nodeURL)
+
+
+const client = new Client({  
+    
+    node : nodeURL, 
     maxRetries: 5,
     sniffOnStart: true,
     log: 'trace'
-
+    
+// node : "http://172.18.0.2:9200/",  //localnode
 
 // for secure elastic search node connection.    
 //  node:"https://<username>:<password>[complete_host_url]" 

@@ -1,24 +1,14 @@
 const express = require('express');
 const formData = require('express-form-data');
 const path = require('path');
-const client = require('./elasticsearch/connection');
-const data = require('./deprecated/data');
-const fullCollection = require('./routes/api/fullCollection');
+const listingsData = require('./deprecated/listingsData');
 const similarityService =  require('./routes/api/similarityService');
+const config = require('./config');
+const { pingElasticsearch } = require('./src/elasticsearch/ping');
+const { periodicIndexFullCollection } = require('./src/common/collection');
   
 //Initialize Express
 const app = express(); 
-
-
-client.ping(
-    function(error) {
-      if (error) {
-          console.error('Elasticsearch cluster is down!');
-      } else {
-          console.log('Elasticsearch cluster is connected');   //works only for Elastic Cloud cluster, and not for local
-      }
-    }
-  );
 
 
 // Init Middleware
@@ -27,8 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(formData.parse())
 
 //Define Routes
-app.use('/api/data', data); //deprecated as listing data is also available in fullCollection.
-app.use('/api/fullCollection', fullCollection);
+app.use('/api/listingsData', listingsData); //deprecated as listing data is also available in fullCollection Data.
 app.use('/api/similarityService', similarityService);
 
 if (process.env.NODE_ENV === 'production') {
@@ -40,4 +29,7 @@ if (process.env.NODE_ENV === 'production') {
  
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.group(`  Server Started On ${PORT}`));
+app.listen(PORT, () => console.group(`Express Server Started On ${PORT}`));
+
+pingElasticsearch()
+periodicIndexFullCollection(config.defaultCollection);
