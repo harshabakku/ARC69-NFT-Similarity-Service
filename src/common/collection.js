@@ -28,7 +28,7 @@
 indexFullCollection = async (collectionName) => { 
      try {
  
-         let dataURL = config.fullCollectionURLPrefix + encodeURI(collectionName) + `?type=collection&sortAscending=true&limit=5000`;            
+         let dataURL = config.fullCollectionURLPrefix + encodeURI(collectionName) + `?type=collection&sortAscending=true&limit=`+ config.assetFetchBatchSize;            
          if(nextToken!=null){
              dataURL = dataURL+ "&nextToken=" + nextToken
          }

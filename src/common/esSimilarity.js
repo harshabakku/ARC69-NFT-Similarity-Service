@@ -9,10 +9,10 @@ const config = require("../../config.js");
 
 
 
-buildExecuteQuery = async (givenNFTData, existsField, limit, explain) => {
+buildExecuteQuery = async (givenNFTData, collectionName, existsField, limit, explain) => {
                 
-        const metadataFields = config.metadataFields;
-        const metadataLongFields = config.metadataLongFields;                   
+        const metadataFields = config.collectionMetadataFieldsMap[collectionName].metadataFields;
+        const metadataLongFields = config.collectionMetadataFieldsMap[collectionName].metadataLongFields;                   
 
 
         //build should query (OR query) to match various asset props here.
@@ -95,10 +95,10 @@ getSimilarNFTs = async (collectionName, assetId, explainScoring, limit) => {
         console.log(' Generating elastisearch queries to return similar NFTs for collectionName : ' + collectionName + " and assetID: "+ assetId + '\n')  
         
         console.log(' Getting Similar listings NFTs from es query results \n')
-        const listingsResult = await buildExecuteQuery(givenNFTData,"listingDate", limit, explainScoring)
+        const listingsResult = await buildExecuteQuery(givenNFTData, collectionName, "listingDate", limit, explainScoring)
         
         console.log(' Getting Similar Sales NFTs from es query results \n')
-        const salesResult = await buildExecuteQuery(givenNFTData, "saleDate", limit, explainScoring)
+        const salesResult = await buildExecuteQuery(givenNFTData, collectionName, "saleDate", limit, explainScoring)
         
       
                     
