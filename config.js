@@ -40,11 +40,25 @@ dotenv.config();
                 metadataLongFields : ["combat", "constitution", "luck", "plunder"],                   
             },
 
-            "AlgoSeas Pirates2": {     
-                metadataFields : [ "Back Hand",  "Back Item",  "Background",  "Background Accent",  "Body",  "Face",  "Facial Hair",  "Footwear",  "Front Hand",  "Hat",  "Head",  "Hip Item",  "Left Arm",  "Necklace",  "Overcoat",  "Pants",  "Pet",  "Right Arm",  "Scenery",  "Shirt",  "Shirts",  "Tattoo"],  
-                metadataLongFields : ["combat", "constitution", "luck", "plunder"],                   
-            }
-                       
+            "Crazy Goose Flock": {                     
+                metadataFields : [ " Beak",  " Body",  " Clothing",  " Eyes",  " Hat",  " Neck",  " Tattoo",  "Background"],  
+                metadataLongFields : [],                   
+            },
+            
+            "Totally Average Cats": {     
+                metadataFields : [ "Background",  "Body",  "Eyes",  "Eyewear",  "Head",  "Mouth",  "Nose",  "Skin" ],  
+                metadataLongFields : [],                   
+            },
+
+            "Higher Ape Circle": {     
+                metadataFields : [ "Backgrounds",  "Body",  "Earring",  "Faces",  "Head ",  "Outfits"],  
+                metadataLongFields : [],                   
+            },
+
+            "AlgoSkulls": {     
+                metadataFields : [ "Accent",  "Background",  "Base",  "Bone",  "Bone Pot",  "Brains",  "Ears",  "Etching",  "Eyes",  "Hat"],  
+                metadataLongFields : ["times_used"],                   
+            },
         }
                     
     }

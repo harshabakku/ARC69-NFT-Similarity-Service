@@ -101,10 +101,14 @@ getSimilarNFTs = async (collectionName, assetId, explainScoring, limit) => {
         const salesResult = await buildExecuteQuery(givenNFTData, collectionName, "saleDate", limit, explainScoring)
         
       
+        console.log(' Getting Similar NFTs (Amongst all Assets) from es query results \n')
+        const result = await buildExecuteQuery(givenNFTData, collectionName, "id", limit, explainScoring)
+        
                     
         const finalResult = {  givenNFT : givenNFTData._source,
                     similarListingNFTs : listingsResult,  //descending with similarity score 
-                    similarSaleNFTs : salesResult
+                    similarSaleNFTs : salesResult,
+                    similarNFTs : result,
                 }
         return finalResult;                            
         
