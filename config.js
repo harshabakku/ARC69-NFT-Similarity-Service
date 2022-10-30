@@ -6,7 +6,7 @@
  */
 
 const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config(); //leverage this and maintain separate .env files for different environments in the future.
 
 (function() {
     // export configuration parameters

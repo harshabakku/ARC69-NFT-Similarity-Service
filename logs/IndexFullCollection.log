@@ -1,0 +1,75 @@
+harsha@harshaLP:~/workspace/ARC69-NFT-Similarity-Service$ npm run server 
+
+> nft-similarity-service@1.0.0 server /home/harsha/workspace/ARC69-NFT-Similarity-Service
+> nodemon --max-old-space-size=4192 server
+
+[nodemon] 1.19.4
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching dir(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node --max-old-space-size=4192 server server.js`
+[2022-10-30T15:13:21.856Z] connecting to Elasticsearch node: http://172.18.0.2:9200/
+[2022-10-30T15:13:21.879Z] ping Elasticsearch
+[2022-10-30T15:13:21.881Z] Periodic Indexing collection: AlgoSeas Pirates
+[2022-10-30T15:13:21.881Z] https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000
+[2022-10-30T15:13:21.883Z] Express Server Started On 8443
+
+  [2022-10-30T15:13:33.163Z] Indexing fetched assets/NFTs to elasticsearch: 5000
+  [2022-10-30T15:13:33.811Z] no. of assets indexed 5000
+  
+  
+  
+  [2022-10-30T15:13:33.812Z] fetching data again using nextToken 
+  [2022-10-30T15:13:33.812Z] https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000&nextToken=eyJQSyI6Ik5GVCIsIlNLIjoiNjkyNTQ2MTQ5IiwiY29sTmFtZSI6IkFsZ29TZWFzIFBpcmF0ZXMiLCJuUmFuayI6NTAwMH0=
+  [2022-10-30T15:13:46.658Z] Indexing fetched assets/NFTs to elasticsearch: 5000
+  [2022-10-30T15:13:47.183Z] no. of assets indexed 5000
+  
+  
+  
+  [2022-10-30T15:13:47.183Z] fetching data again using nextToken 
+  [2022-10-30T15:13:47.183Z] https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000&nextToken=eyJQSyI6Ik5GVCIsIlNLIjoiNzUzMjI1NTcxIiwiY29sTmFtZSI6IkFsZ29TZWFzIFBpcmF0ZXMiLCJuUmFuayI6MTAwMDB9
+  [2022-10-30T15:14:02.002Z] Indexing fetched assets/NFTs to elasticsearch: 5000
+  [2022-10-30T15:14:02.493Z] no. of assets indexed 5000
+  
+  
+  
+  [2022-10-30T15:14:02.494Z] fetching data again using nextToken 
+  [2022-10-30T15:14:02.494Z] https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000&nextToken=eyJQSyI6Ik5GVCIsIlNLIjoiODQ5OTQyMjM4IiwiY29sTmFtZSI6IkFsZ29TZWFzIFBpcmF0ZXMiLCJuUmFuayI6MTUwMDB9
+  [2022-10-30T15:14:18.150Z] Indexing fetched assets/NFTs to elasticsearch: 5000
+  [2022-10-30T15:14:18.630Z] no. of assets indexed 5000
+  
+  
+  
+  [2022-10-30T15:14:18.630Z] fetching data again using nextToken 
+  [2022-10-30T15:14:18.630Z] https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000&nextToken=eyJQSyI6Ik5GVCIsIlNLIjoiNzk1OTI0NTczIiwiY29sTmFtZSI6IkFsZ29TZWFzIFBpcmF0ZXMiLCJuUmFuayI6MjAwMDB9
+  [2022-10-30T15:14:25.140Z] Indexing fetched assets/NFTs to elasticsearch: 1397
+  [2022-10-30T15:14:25.288Z] no. of assets indexed 1397
+  
+  
+  
+  [2022-10-30T15:14:25.289Z] fetching data again using nextToken 
+  [2022-10-30T15:14:25.289Z] https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/AlgoSeas%20Pirates?type=collection&sortAscending=true&limit=5000&nextToken=eyJQSyI6Ik5GVCIsIlNLIjoiOTIzODQ0MjM3IiwiY29sTmFtZSI6IkFsZ29TZWFzIFBpcmF0ZXMiLCJuUmFuayI6MjEzOTd9
+  [2022-10-30T15:14:27.139Z] Indexing fetched assets/NFTs to elasticsearch: 0
+  [2022-10-30T15:14:27.139Z] no. of assets indexed 0
+  
+  
+  
+  [2022-10-30T15:14:27.140Z] All Assets (Full Collection) Have Been Indexed!
+  
+  
+  
+  [2022-10-30T15:14:27.140Z] Fetching Sales Data now....https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/sales?collectionName=AlgoSeas%20Pirates&sortBy=time&sortAscending=false&limit=5000
+  [2022-10-30T15:14:54.568Z] no. of asset Sales fetched 3868
+  [2022-10-30T15:15:14.204Z] Full Sales Data Indexing/Updating Complete:  3868 assets 
+  
+  
+  
+  [2022-10-30T15:15:14.206Z] Full Collection: All Assets,  Listings and Sales Have Been Indexed for collection: AlgoSeas Pirates
+  
+  
+  
+  
+  
+  [2022-10-30T15:15:14.206Z] Next Data Check Again In 60 secs again........... 
+
+

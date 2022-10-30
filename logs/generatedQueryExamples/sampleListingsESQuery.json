@@ -1,0 +1,139 @@
+{
+	"explain": "true",
+	"size": "50",
+	"query": {
+		"function_score": {
+			"query": {
+				"bool": {
+					"should": [{
+						"match": {
+							"Back Hand": "false"
+						}
+					}, {
+						"match": {
+							"Back Item": "Saber"
+						}
+					}, {
+						"match": {
+							"Background": "false"
+						}
+					}, {
+						"match": {
+							"Background Accent": "Moon"
+						}
+					}, {
+						"match": {
+							"Body": "Seafoam"
+						}
+					}, {
+						"match": {
+							"Face": "false"
+						}
+					}, {
+						"match": {
+							"Facial Hair": "false"
+						}
+					}, {
+						"match": {
+							"Footwear": "Boots"
+						}
+					}, {
+						"match": {
+							"Front Hand": "false"
+						}
+					}, {
+						"match": {
+							"Hat": "false"
+						}
+					}, {
+						"match": {
+							"Head": "Mohawk"
+						}
+					}, {
+						"match": {
+							"Hip Item": "Bomb Belt"
+						}
+					}, {
+						"match": {
+							"Left Arm": "false"
+						}
+					}, {
+						"match": {
+							"Necklace": "false"
+						}
+					}, {
+						"match": {
+							"Overcoat": "Pumpkin"
+						}
+					}, {
+						"match": {
+							"Pants": "Amethyst"
+						}
+					}, {
+						"match": {
+							"Pet": "false"
+						}
+					}, {
+						"match": {
+							"Right Arm": "false"
+						}
+					}, {
+						"match": {
+							"Scenery": "Sunset"
+						}
+					}, {
+						"match": {
+							"Shirt": "false"
+						}
+					}, {
+						"match": {
+							"Shirts": "false"
+						}
+					}, {
+						"match": {
+							"Tattoo": "Anchor"
+						}
+					}],
+					"filter": [{
+						"exists": {
+							"field": "listingDate"
+						}
+					}]
+				}
+			},
+			"functions": [{
+				"linear": {
+					"combat": {
+						"origin": 37,
+						"scale": 1,
+						"decay": 0.99
+					}
+				}
+			}, {
+				"linear": {
+					"constitution": {
+						"origin": 41,
+						"scale": 1,
+						"decay": 0.99
+					}
+				}
+			}, {
+				"linear": {
+					"luck": {
+						"origin": 53,
+						"scale": 1,
+						"decay": 0.99
+					}
+				}
+			}, {
+				"linear": {
+					"plunder": {
+						"origin": 49,
+						"scale": 1,
+						"decay": 0.99
+					}
+				}
+			}]
+		}
+	}
+}

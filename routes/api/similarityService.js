@@ -12,11 +12,9 @@ const config = require('../../config');
 
 
 
-router.get('/indexFullCollection', async function (req, res) {
-    
-    //fetch and index data for the first time. //takes less than 2 min 
-    
-    const collectionName = req.query.collectionName;    
+router.post('/indexFullCollection', async function (req, res) {
+         
+    const collectionName = req.body.collectionName;    
     
     console.log('Getting Data From AlgoSeas Full Collection API for collection: '+ collectionName);
     await indexFullCollection(collectionName);
