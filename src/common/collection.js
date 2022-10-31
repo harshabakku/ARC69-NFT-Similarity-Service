@@ -63,7 +63,7 @@ indexFullCollection = async (collectionName) => {
  
              
              //http://localhost:9200/index/_doc/id  returns the asset properties/data where index is the collectionName and id is asset/pirate Id
-             esIndex =  collectionName.replace(/ /g,'').toLowerCase(), //es allows index names without spaces and lowercase only 
+             esIndex =  collectionName.replace(/[^A-Z0-9]/ig, "").toLowerCase(), //es allows index names without special characters and spaces and lowercase only 
              
              //convert booleans to string as elasticsearch schema fails to understand  {"Shirts": "Flow"}, if {"Shirts": false} is already added for other document(asset)
              assetProps = JSON.parse(JSON.stringify(assetProps, replacer)),
@@ -106,15 +106,15 @@ indexFullCollection = async (collectionName) => {
              const algoSeasAssetSales = result.data.reverse(); //reversed here so that latest sale overwrites older one if any
              
              console.log("no. of asset Sales fetched " + algoSeasAssetSales.length)
-                                     
+             
              //for loop is being used here as there are  NFT secondary sales ..,  
              for (let i=0; i < algoSeasAssetSales.length; i++) {
                  let asset = algoSeasAssetSales[i];
                  
                  assetId   =  asset.assetInformation.nName.split("#")[1],  
-                 esIndex =   collectionName.replace(/ /g,'').toLowerCase(),  
-                                         
-                 await client.update({ 
+                 esIndex =   collectionName.replace(/[^A-Z0-9]/ig, "").toLowerCase(),  
+                 
+                 assetId && await client.update({ 
                      index: esIndex, 
                      id:  assetId,
                      body: {doc : {saleAlgoAmount : asset.marketActivity.algoAmount , saleDate : asset.marketActivity.creationDate, saleTxnID : asset.marketActivity.txnID, saleGroupTxnID : asset.marketActivity.groupTxnID, }}   //updated data has to be sent in doc field here

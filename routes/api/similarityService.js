@@ -22,7 +22,7 @@ router.post('/indexFullCollection', async function (req, res) {
     
     res.json({ message: "Full Collection: All Assets,  Listings and Sales Have Been Indexed for collection: "+ collectionName,
                indexStats: config.elasticSearchServerURL + "_cat/indices?v=true",
-               index: config.elasticSearchServerURL+ collectionName.replace(/ /g,'').toLowerCase() + "/_search?pretty=true&q=*:*&size=100"  
+               index: config.elasticSearchServerURL+ collectionName.replace(/[^A-Z0-9]/ig, "").toLowerCase() + "/_search?pretty=true&q=*:*&size=100"  
             });
              
 

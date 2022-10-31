@@ -88,7 +88,7 @@ getSimilarNFTs = async (collectionName, assetId, explainScoring, limit) => {
     try {
                     
         const givenNFTData = await client.get({
-            index: collectionName.replace(/ /g,'').toLowerCase(),  
+            index: collectionName.replace(/[^A-Z0-9]/ig, "").toLowerCase(),  
             id: assetId
           })
 
