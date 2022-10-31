@@ -12,7 +12,7 @@ dotenv.config(); //leverage this and maintain separate .env files for different 
     // export configuration parameters
     module.exports = {
 
-        elasticSearchServerURL : 'http://172.18.0.2:9200/', //local server
+        elasticSearchServerURL : 'http://localhost:9200/', //local server
 
         fullCollectionURLPrefix : 'https://d3ohz23ah7.execute-api.us-west-2.amazonaws.com/prod/marketplace/v2/assetsByCollection/', 
 

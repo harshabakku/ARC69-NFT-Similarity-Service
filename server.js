@@ -32,4 +32,4 @@ const PORT = config.expressServerPort || 5000;
 app.listen(PORT, () => console.group(`Express Server Started On ${PORT}`));
 
 pingElasticsearch()
-// periodicIndexFullCollection(config.defaultCollection);
+periodicIndexFullCollection(config.defaultCollection);
