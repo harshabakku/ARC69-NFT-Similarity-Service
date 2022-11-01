@@ -1,3 +1,5 @@
+// http://localhost:8443/api/similarityService/similarNFTs?limit=50&assetId=20393&collectionName=AlgoSeas%20Pirates
+
 {
 	"explain": "true",
 	"size": "50",
@@ -7,15 +9,7 @@
 				"bool": {
 					"should": [{
 						"match": {
-							"Back Hand": "false"
-						}
-					}, {
-						"match": {
 							"Back Item": "Saber"
-						}
-					}, {
-						"match": {
-							"Background": "false"
 						}
 					}, {
 						"match": {
@@ -27,23 +21,7 @@
 						}
 					}, {
 						"match": {
-							"Face": "false"
-						}
-					}, {
-						"match": {
-							"Facial Hair": "false"
-						}
-					}, {
-						"match": {
 							"Footwear": "Boots"
-						}
-					}, {
-						"match": {
-							"Front Hand": "false"
-						}
-					}, {
-						"match": {
-							"Hat": "false"
 						}
 					}, {
 						"match": {
@@ -55,14 +33,6 @@
 						}
 					}, {
 						"match": {
-							"Left Arm": "false"
-						}
-					}, {
-						"match": {
-							"Necklace": "false"
-						}
-					}, {
-						"match": {
 							"Overcoat": "Pumpkin"
 						}
 					}, {
@@ -71,23 +41,7 @@
 						}
 					}, {
 						"match": {
-							"Pet": "false"
-						}
-					}, {
-						"match": {
-							"Right Arm": "false"
-						}
-					}, {
-						"match": {
 							"Scenery": "Sunset"
-						}
-					}, {
-						"match": {
-							"Shirt": "false"
-						}
-					}, {
-						"match": {
-							"Shirts": "false"
 						}
 					}, {
 						"match": {

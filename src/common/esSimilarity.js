@@ -19,6 +19,7 @@ buildExecuteQuery = async (givenNFTData, collectionName, existsField, limit, exp
         //elasticsearch computes the similarity score accordingly depending on the no. of matches . https://www.elastic.co/guide/en/elasticsearch/reference/current/similarity.html
         const propertyQueries = [];
         metadataFields.forEach(function(property) {
+                givenNFTData._source[property].toLowerCase() != "false" &&
                 propertyQueries.push({ "match": { [property] :  givenNFTData._source[property] }});                
             });
 

@@ -59,6 +59,11 @@ dotenv.config(); //leverage this and maintain separate .env files for different 
                 metadataFields : [ "Accent",  "Background",  "Base",  "Bone",  "Bone Pot",  "Brains",  "Ears",  "Etching",  "Eyes",  "Hat"],  
                 metadataLongFields : ["times_used"],                   
             },
+            "Alvatars: Tile Fighters": {     
+                metadataFields : [ "Back",  "Background",  "Chest",  "Eyes",  "Familiar",  "Feet",  "Hair",  "Head", "Legs", "Mainhand", "Mouth", "Offhand", "Personality", "Presenting", "Race", "Shoulders", "Tier", , "Type", "standard" ],  
+                metadataLongFields : ["Bottom Left",  "Bottom Right", "Power", "Top Left", "Top Right" ],                   
+
+            }
         }
                     
     }
