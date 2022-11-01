@@ -85,7 +85,7 @@ Sample data can be seen here..
 
 >{httpsElasticsearchServer}/${collectionNameInSmallsAndSpacesTrimmed}/_search?pretty=true&q=*:*&size=100
 
->eg: http://localhost:9200/crazygooseflock/_search?pretty=true&q=*:*
+>eg: http://localhost:9200/crazygooseflock/_search?pretty=true&q=*:*&size=100
 
 -------------------------
 
@@ -120,6 +120,7 @@ http://localhost:8443/api/similarityService/similarNFTs?limit=100&assetId=3070&c
 
 >http://localhost:8443/api/similarityService/similarNFTs?limit=20&assetId=201&collectionName=Higher%20Ape%20Circle
 
+>http://localhost:8443/api/similarityService/similarNFTs?limit=20&assetId=6725&collectionName=Alvatars:%20Tile%20Fighters
 
 explainScoring=true works here for any collection as well
 
@@ -131,20 +132,10 @@ Please note that where sometimes there is not enough Listings or Sales data for 
 
 Also note that similarNFTs in the API response always has the NFTs with highest scores as we are querying all the Assets/NFTs in the collection.
 
-
->For any qns/queries I am here.. https://t.me/harshabakku
-
-
 ------------------------------------------------------------
 
-#### live API setup on AWS server  
 
-Apologies 
-
-**t2.micro** (1gb RAM) is insufficient for the elasticsearch and node server setup. 
-Elasticsearch Server, All the development and testing was locally done on a **16gb RAM** machine.I recommend atleast **8GB RAM** machine for the setup. 
-
->Feel free to connect with me 
+> Please feel free to connect with me for any qns/queries to get this code up and running...
 https://discordapp.com/users/harshabakku#3608
 https://t.me/harshabakku
 
