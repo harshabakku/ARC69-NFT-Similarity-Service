@@ -13,10 +13,8 @@ Install elasticsearch using docker,
 ```sh
  sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.3
 
- sudo docker run --name elasticsearch --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"  -e "xpack.security.enabled=false" -t docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+ sudo docker run --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"  -e "xpack.security.enabled=false" -t docker.elastic.co/elasticsearch/elasticsearch:8.4.3
 ```
-
-You can also choose to setup a free online server here.. https://cloud.elastic.co/registration  and then update elasticSearchServerURL in config.js
 
 -------------------
 
@@ -139,4 +137,14 @@ Also note that similarNFTs in the API response always has the NFTs with highest 
 
 ------------------------------------------------------------
 
-###### live API setup on AWS server  
+#### live API setup on AWS server  
+
+Apologies 
+
+**t2.micro** (1gb RAM) is insufficient for the elasticsearch and node server setup. 
+Elasticsearch Server, All the development and testing was locally done on a **16gb RAM** machine.I recommend atleast **8GB RAM** machine for the setup. 
+
+>Feel free to connect with me 
+https://discordapp.com/users/harshabakku#3608
+https://t.me/harshabakku
+
