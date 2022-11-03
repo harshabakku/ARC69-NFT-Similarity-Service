@@ -132,10 +132,18 @@ Please note that where sometimes there is not enough Listings or Sales data for 
 
 Also note that similarNFTs in the API response always has the NFTs with highest scores as we are querying all the Assets/NFTs in the collection.
 
+----------------------------------------------------------
+
+#### Demo Video 
+
+> https://www.youtube.com/watch?v=SLpH-ZhaKdg
+
+
 ------------------------------------------------------------
 
 
 > Please feel free to connect with me for any qns/queries to get this code up and running...
 https://discordapp.com/users/harshabakku#3608
+
 https://t.me/harshabakku
 
